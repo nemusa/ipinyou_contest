@@ -1,5 +1,4 @@
 Region	Region Name
-0	unknown
 1	beijing
 2	tianjin
 3	hebei

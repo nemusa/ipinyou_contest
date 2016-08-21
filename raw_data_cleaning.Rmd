@@ -1,0 +1,119 @@
+---
+title: "Impression Cleaning and Analysis"
+author: "Zuzanna Hartleb"
+date: "21 August 2016"
+output: html_document
+---
+
+Simple analysis of impressions for advertiser 2821.
+
+View [data set](https://pages.github.com/)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message = FALSE, warning = FALSE, include=FALSE}
+setClass('myDate')
+setAs("character","myDate", function(from) strptime(substr(from, 1, 14), format="%Y%m%d%H%M%S"))
+
+imp_log <- read.csv('~/Projects/rtb_data_mining/data/training3rd/imp.20131021.adv2821.limit1000.txt',
+                    sep = "\t",
+                    na.strings = c("null", "Na"),
+                    stringsAsFactors=TRUE,
+                    col.names = c("Bid ID",
+                                         "Timestamp",
+                                         "Log type",
+                                         "iPinyou ID",
+                                         "User-Agent",
+                                         "IP",
+                                         "Region",
+                                         "City",
+                                         "Ad exchange",
+                                         "Domain",
+                                         "URL",
+                                         "Anonymous URL ID",
+                                         "Ad slot ID",
+                                         "Ad slot width",
+                                         "Ad slot height",
+                                         "Ad slot visibility",
+                                         "Ad slot format",
+                                         "Ad slot floor price RMB CPM",
+                                         "Creative ID",
+                                         "Bidding price RMB CPM",
+                                         "Paying price RMB CPM",
+                                         "Key page URL",
+                                         "Advertiser ID",
+                                         "User Tags"),
+                    colClasses = c("factor",
+                                   "myDate",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "factor",
+                                   "numeric",
+                                   "numeric",
+                                   "factor",
+                                   "factor",
+                                   "numeric",
+                                   "factor",
+                                   "numeric",
+                                   "numeric",
+                                   "factor",
+                                   "factor",
+                                   "factor")
+)
+cities <- read.csv('~/Projects/rtb_data_mining/data/city.en.txt',
+                  sep="\t",
+                  stringsAsFactors=TRUE,
+                  blank.lines.skip=TRUE,
+                  colClasses = c("factor", "factor")
+)
+regions <- read.csv('~/Projects/rtb_data_mining/data/region.en.txt',
+                   sep="\t",
+                   stringsAsFactors=TRUE,
+                   blank.lines.skip=TRUE,
+                   colClasses = c("factor", "factor")
+)
+enriched <- merge(x=imp_log, y=cities, by="City", all.x = TRUE)
+enriched <- merge(x=enriched, y=regions, by="Region", all.x = TRUE)
+
+enriched$City <- NULL
+enriched$Region <- NULL
+
+# Splitting user tag values into separate columns
+library(tm)
+
+split_tags <- strsplit(as.character(enriched$User.Tags), ',')
+corpus <- Corpus(VectorSource(split_tags))
+mock_tokenizer <- function(string){
+    return(string)
+}
+dtm <- DocumentTermMatrix(corpus, control = list(tokenize=mock_tokenizer, removePunctuation = FALSE, stopwords = FALSE))
+terms <-as.data.frame(as.matrix(dtm))
+enriched[["Tag"]] <- terms
+enriched$User.Tags <- NULL
+```
+
+## Paying price
+
+```{r enriched}
+summary(enriched$Paying.price.RMB.CPM)
+```
+
+```{r pressure, echo=FALSE}
+hist(enriched$Paying.price.RMB.CPM, breaks=100, main="Paying Price Distribution", xlab="RMB CPM", ylab=NULL)
+```
+
+## Impression frequency
+
+```{r frequency, echo=FALSE}
+hist(table(enriched$iPinyou.ID), breaks=100, main="User Impression Frequency", xlab="Sum Of Ad Impressions", ylab=NULL)
+```

@@ -6,6 +6,8 @@ Dataset
 This repository contains only small data sample. The entire dataset is available at:
 http://contest.ipinyou.com/data-release.html
 
+Simple exploratory data analysis http://arxiv.org/pdf/1407.7073v2.pdf
+
 Data description
 -------
 
