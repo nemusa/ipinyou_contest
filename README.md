@@ -30,5 +30,5 @@ Sample preparation scripts
 -------
 
 Extract only the lines regarding advertiser ID 2261 (23rd column)
-    head -5 imp.20131027.txt | awk -F $'\t' '$23 == "2261"'
 
+    head -5 imp.20131027.txt | awk -F $'\t' '$23 == "2261"'

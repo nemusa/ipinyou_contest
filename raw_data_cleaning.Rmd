@@ -7,7 +7,7 @@ output: html_document
 
 Simple analysis of impressions for advertiser 2821.
 
-View [data set](https://pages.github.com/)
+View [data set](https://github.com/nemusa/rtb_data_mining/blob/master/data/training3rd/imp.20131021.adv2821.limit1000.txt)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
