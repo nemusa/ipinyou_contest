@@ -32,3 +32,8 @@ Sample preparation scripts
 Extract only the lines regarding advertiser ID 2261 (23rd column)
 
     head -5 imp.20131027.txt | awk -F $'\t' '$23 == "2261"'
+    
+Analysis:
+------
+* [Impression cleaning and analysis](https://nemusa.github.io/rtb_data_mining/raw_data_cleaning)
+
