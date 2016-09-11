@@ -13,10 +13,14 @@ View [data set](https://github.com/nemusa/rtb_data_mining/blob/master/data/train
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Dependencies: scatterplot3d, tm
+### Running this notebook
 
+Dependencies: `scatterplot3d`, `tm`
+
+```
 install.packages("tm")
 install.packages("scatterplot3d")
+```
 
 ```{r message = FALSE, warning = FALSE, include=FALSE}
 library(tm)
@@ -111,13 +115,13 @@ enriched[["Tag"]] <- terms
 enriched$User.Tags <- NULL
 ```
 
-## Impression frequency
+### Impression frequency
 
 ```{r frequency, echo=FALSE}
 hist(table(enriched$iPinyou.ID), breaks=100, main="User Impression Frequency", xlab="Sum Of Ad Impressions", ylab="Number Of Users")
 ```
 
-## Paying price
+### Paying price
 
 ```{r enriched}
 summary(enriched$Paying.price.RMB.CPM)
@@ -127,7 +131,7 @@ summary(enriched$Paying.price.RMB.CPM)
 hist(enriched$Paying.price.RMB.CPM, breaks=100, main="Paying Price Frequency", xlab="RMB CPM", ylab="Number Of Impressions")
 ```
 
-## Ad slot size
+### Ad slot size
 
 ```{r size, echo=FALSE}
 plot(enriched[c('Ad.slot.width', 'Ad.slot.height')], type="p", xlab="Width", ylab="Height")
