@@ -1,29 +1,3 @@
----
-title: "Impression Cleaning and Analysis"
-author: "Zuzanna Hartleb"
-date: "21 August 2016"
-output: html_document
----
-
-Simple analysis of impressions for advertiser 2821.
-
-View [data set](https://github.com/nemusa/rtb_data_mining/blob/master/data/training3rd/imp.20131021.adv2821.limit1000.txt)
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-Dependencies: scatterplot3d, tm
-
-install.packages("tm")
-install.packages("scatterplot3d")
-
-```{r message = FALSE, warning = FALSE, include=FALSE}
-library(tm)
-library(scatterplot3d)
-```
-
-```{r message = FALSE, warning = FALSE, include=FALSE}
 setClass('myDate')
 setAs("character","myDate", function(from) strptime(substr(from, 1, 14), format="%Y%m%d%H%M%S"))
 
@@ -99,6 +73,7 @@ enriched$City <- NULL
 enriched$Region <- NULL
 
 # Splitting user tag values into separate columns
+library(tm)
 
 split_tags <- strsplit(as.character(enriched$User.Tags), ',')
 corpus <- Corpus(VectorSource(split_tags))
@@ -109,33 +84,3 @@ dtm <- DocumentTermMatrix(corpus, control = list(tokenize=mock_tokenizer, remove
 terms <-as.data.frame(as.matrix(dtm))
 enriched[["Tag"]] <- terms
 enriched$User.Tags <- NULL
-```
-
-## Impression frequency
-
-```{r frequency, echo=FALSE}
-hist(table(enriched$iPinyou.ID), breaks=100, main="User Impression Frequency", xlab="Sum Of Ad Impressions", ylab="Number Of Users")
-```
-
-## Paying price
-
-```{r enriched}
-summary(enriched$Paying.price.RMB.CPM)
-```
-
-```{r pressure, echo=FALSE}
-hist(enriched$Paying.price.RMB.CPM, breaks=100, main="Paying Price Frequency", xlab="RMB CPM", ylab="Number Of Impressions")
-```
-
-## Ad slot size
-
-```{r size, echo=FALSE}
-plot(enriched[c('Ad.slot.width', 'Ad.slot.height')], type="p", xlab="Width", ylab="Height")
-```
-
-## Size vs. Paying Price
-```{r sizevsprice, echo=FALSE}
-enriched$Ad.slot.maxsize <- pmax(enriched$Ad.slot.height, enriched$Ad.slot.width)
-plot(enriched[c('Ad.slot.maxsize', 'Paying.price.RMB.CPM')], type="p", xlab="max(width, height)", ylab="Price")
-```
-
